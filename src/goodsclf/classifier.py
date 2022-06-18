@@ -18,18 +18,19 @@ class GoodsClassifier:
         self.model = None
         self.labels = None
 
-    def _load_from_resource(self):
-        self.transformer = pickle.load(
-            files("goodsclf.data")
-            .joinpath("transformer.pickle")
-            .open(mode="rb")
-        )
-        self.model = pickle.load(
-            files("goodsclf.data").joinpath("model.pickle").open(mode="rb")
-        )
-        self.labels = pickle.load(
-            files("goodsclf.data").joinpath("labels.pickle").open(mode="rb")
-        )
+    def load_default(self):
+        transformer = files("goodsclf.data").joinpath("transformer.pickle")
+        model = files("goodsclf.data").joinpath("model.pickle")
+        labels = files("goodsclf.data").joinpath("labels.pickle")
+
+        with transformer.open(mode="rb") as t, model.open(
+            mode="rb"
+        ) as m, labels.open(mode="rb") as lb:
+            self.transformer = pickle.load(t)
+            self.model = pickle.load(m)
+            self.labels = pickle.load(lb)
+
+            return self
 
     def load(
         self,
@@ -38,7 +39,7 @@ class GoodsClassifier:
         labels: str = "",
     ):
         if not transformer and not model and not labels:
-            self._load_from_resource()
+            return self.load_default()
         else:
             with open(transformer, "rb") as t, open(model, "rb") as m, open(
                 labels, "rb"
@@ -47,14 +48,14 @@ class GoodsClassifier:
                 self.model = pickle.load(m)
                 self.labels = pickle.load(lb)
 
-        return self
+                return self
 
     def predict(self, data: List[str]) -> List[str]:
         assert self.transformer
         assert self.model
         assert self.labels
 
-        cleaned_data = clean_data(data)
+        cleaned_data = [clean_data(item) for item in data]
         test = self.transformer.transform(cleaned_data).toarray()
         pred = self.model.predict(test)
 
