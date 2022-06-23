@@ -3,8 +3,8 @@ from goodsclf.util import clean_data
 
 def test_clean_data():
     data = [
-        ("Golden Apples, 500g LIDL", "golden apples 500 g lidl"),
-        ("AA,BB.CC-DD!", "aa bb cc dd"),
+        ("Golden Apples, 500g LIDL", "golden apples lidl"),
+        ("AA,BB.CC-DD!", "aa bb cc-dd"),
     ]
 
     for item in data:

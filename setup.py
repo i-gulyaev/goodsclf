@@ -28,8 +28,7 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     package_data={
         f"{PKG_NAME}.data": [
-            "transformer.pickle",
-            "model.pickle",
+            "estimator.pickle",
             "labels.pickle",
         ],
     },
